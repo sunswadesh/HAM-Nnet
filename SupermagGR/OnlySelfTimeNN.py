@@ -20,21 +20,15 @@ sns.set(style='whitegrid', palette='muted', font_scale=1.5)
 
 rcParams['figure.figsize'] = 16, 10
 
-RANDOM_SEED = 42
-np.random.seed(RANDOM_SEED)
-tf.random.set_seed(RANDOM_SEED)
+csv_path = 'Magnetometers/Supermag/20201208-17-20-supermag.csv'
 
-time = np.arange(0, 2500, 0.1)
-# day = np.arange(0, 1500, 0.1)
-tnd = np.linspace(0,5,len(time))
-ftnd = np.linspace(0,15,len(time))
-sin = np.sin(time) + np.sin(2*time) + np.sin(0.02*time) + tnd + np.random.normal(scale=.5, size=len(time))
+df = pd.read_csv(csv_path)
 
-df = pd.DataFrame(dict(sine=sin, trend = tnd, fake = ftnd), index=time, columns=['sine', 'Trend', 'Fake'])
+df = df[['dbe_nez']]
 
-dfe = df = pd.DataFrame(dict(sine=sin, trend = tnd))
-# plt.figure()
-# plt.plot(df)
+
+plt.figure()
+plt.plot(df)
 train_size = int(len(df) * 0.3)
 test_size = len(df) - train_size
 train, test = df.iloc[0:train_size], df.iloc[train_size:len(df)]
@@ -53,9 +47,9 @@ time_steps = 10
 
 # reshape to [samples, time_steps, n_features]
 
-X_train, y_train = create_dataset(train, train.sine, time_steps)
-X_test, y_test = create_dataset(test, test.sine, time_steps)
-xtot, ytot = create_dataset(df, df.sine, time_steps)
+X_train, y_train = create_dataset(train, train.dbe_nez, time_steps)
+X_test, y_test = create_dataset(test, test.dbe_nez, time_steps)
+xtot, ytot = create_dataset(df, df.dbe_nez, time_steps)
 # X_train, y_train = create_dataset(train, train.index, time_steps)
 # X_test, y_test = create_dataset(test, test.index, time_steps)
 
@@ -74,7 +68,7 @@ model.compile(
 
 history = model.fit(
     X_train, y_train,
-    epochs=25,
+    epochs=12,
     batch_size=160,
     validation_split=0.1,
     verbose=1,
@@ -102,17 +96,17 @@ plt.plot(ytn)
 
 
 ## Train on the whole dataset. This should be equivalent to an empirical model.
-history = model.fit(
-    xtot, ytot,
-    epochs=10,
-    batch_size=160,
-    validation_split=0.1,
-    verbose=1,
-    shuffle=False
-)
-ytot_pred = model.predict(xtot)
-plt.figure()
-plt.plot(ytot)
-plt.plot(ytot_pred)
+# history = model.fit(
+#     xtot, ytot,
+#     epochs=10,
+#     batch_size=160,
+#     validation_split=0.1,
+#     verbose=1,
+#     shuffle=False
+# )
+# ytot_pred = model.predict(xtot)
+# plt.figure()
+# plt.plot(ytot)
+# plt.plot(ytot_pred)
 
 
