@@ -3,6 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Files and docs in the main Folders
+papers/
+simpleNN-master/
+Magnetometers/
+*.zip
+*.txt
+*.mat
+*.pdf
+
 # C extensions
 *.so
 
